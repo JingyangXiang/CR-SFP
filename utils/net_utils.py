@@ -179,8 +179,8 @@ def mutual_cos(model, input, label, loss_func, alpha=1.):
 
 
 def bibce(mask_output, no_mask_output):
-    loss1 = F.binary_cross_entropy_with_logits(mask_output, no_mask_output.detach())
-    loss2 = F.binary_cross_entropy_with_logits(no_mask_output, mask_output.detach())
+    loss1 = F.binary_cross_entropy_with_logits(mask_output, no_mask_output.softmax(dim=-1).detach())
+    loss2 = F.binary_cross_entropy_with_logits(no_mask_output, mask_output.softmax(dim=-1).detach())
     return 0.5 * (loss1 + loss2)
 
 
