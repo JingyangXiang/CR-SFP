@@ -178,6 +178,27 @@ def mutual_cos(model, input, label, loss_func, alpha=1.):
     return loss, no_mask_output
 
 
+def bibce(mask_output, no_mask_output):
+    loss1 = F.binary_cross_entropy_with_logits(mask_output, no_mask_output.detach())
+    loss2 = F.binary_cross_entropy_with_logits(no_mask_output, mask_output.detach())
+    return 0.5 * (loss1 + loss2)
+
+
+def mutual_bce(model, input, label, loss_func, alpha=1.):
+    assert isinstance(input, list) and len(input) == 2
+    # input: no_mask_forward_type
+    model.apply(set_mask_forward_true)
+    mask_output = model(input[0])
+    model.apply(set_mask_forward_false)
+    no_mask_output = model(input[1], no_mask=True)
+    # output: no_mask_forward_type
+    loss1 = (loss_func(mask_output, label) + loss_func(no_mask_output, label))
+    # 交叉熵非常容易很靠近
+    loss2 = bibce(mask_output, no_mask_output)
+    loss = loss1 + alpha * loss2
+    return loss, no_mask_output
+
+
 def set_mask_forward_true(module):
     if hasattr(module, "mask"):
         module.set_mask_forward_true()

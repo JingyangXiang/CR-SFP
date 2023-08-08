@@ -20,9 +20,13 @@ python pruning_train.py ./dataset/imagenet -a mobilenet_v1 --save_dir ./two_crop
         --prune-rate 0.34375  --workers 8 --alpha 1 --two-crop --prune-criterion l2 --loss-type ce+kl
 
 # resnet18+ce+cos
-python pruning_train.py ./dataset/imagenet -a resnet18 --save_dir ./two_crop/resnet18-rate-0.3-mutual \
+python pruning_train.py ./dataset/imagenet -a resnet18 --save_dir ./two_crop/resnet18-rate-0.3-mutual-cos \
         --prune-rate 0.3  --workers 8 --alpha 1 --two-crop --prune-criterion l2 --loss-type ce+cos
 
+# resnet18+ce+bce
+python pruning_train.py ./dataset/imagenet -a resnet18 --save_dir ./two_crop/resnet18-rate-0.3-mutual-bce \
+        --prune-rate 0.3  --workers 8 --alpha 1 --two-crop --prune-criterion l2 --loss-type ce+bce
+
 # resnet18+ce
-python pruning_train.py ./dataset/imagenet -a resnet18 --save_dir ./two_crop/resnet18-rate-0.3-mutual \
+python pruning_train.py ./dataset/imagenet -a resnet18 --save_dir ./two_crop/resnet18-rate-0.3-mutual-ce \
         --prune-rate 0.3  --workers 8 --alpha 0. --two-crop --prune-criterion l2 --loss-type ce

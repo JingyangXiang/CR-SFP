@@ -3,7 +3,7 @@ import time
 from torch.cuda.amp import GradScaler
 from torch.cuda.amp import autocast
 
-from utils.net_utils import AverageMeter, accuracy, mutual_kl, mutual_cos
+from utils.net_utils import AverageMeter, accuracy, mutual_kl, mutual_cos, mutual_bce
 from utils.net_utils import do_grad_mask
 
 scaler = GradScaler()
@@ -41,6 +41,10 @@ def train_engine(train_loader, model, criterion, optimizer, epoch, log, print_lo
                     loss = (loss + loss2) * 0.5
             elif args.loss_type == 'ce+cos':
                 loss, output = mutual_cos(model, input_var, target_var, criterion, alpha=args.alpha)
+                if args.symmetric:
+                    raise NotImplementedError
+            elif args.loss_type == 'ce+bce':
+                loss, output = mutual_bce(model, input_var, target_var, criterion, alpha=args.alpha)
                 if args.symmetric:
                     raise NotImplementedError
             elif args.loss_type == 'ce':
