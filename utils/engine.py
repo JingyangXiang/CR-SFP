@@ -36,11 +36,18 @@ def train_engine(train_loader, model, criterion, optimizer, epoch, log, print_lo
         with autocast():
             if args.loss_type == 'ce+kl':
                 loss, output = mutual_kl(model, input_var, target_var, criterion, alpha=args.alpha)
+                if args.symmetric:
+                    loss2, output = mutual_kl(model, input_var[::-1], target_var, criterion, alpha=args.alpha)
+                    loss = (loss + loss2) * 0.5
             elif args.loss_type == 'ce+cos':
                 loss, output = mutual_cos(model, input_var, target_var, criterion, alpha=args.alpha)
+                if args.symmetric:
+                    raise NotImplementedError
             elif args.loss_type == 'ce':
                 assert args.alpha == 0
                 loss, output = mutual_kl(model, input_var, target_var, criterion, alpha=args.alpha)
+                if args.symmetric:
+                    raise NotImplementedError
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))

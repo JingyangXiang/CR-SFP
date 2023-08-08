@@ -43,6 +43,7 @@ def parse_arguments():
     parser.add_argument('--two-crop', dest='two_crop', action='store_true', help='use two corp')
     parser.add_argument('--loss-type', default='ce+kl', choices=['ce+kl', 'ce+cos', 'ce'], help='loss type')
     parser.add_argument('--prune-criterion', default='l2', choices=['l2', 'fpgm', 'taylor'], help='prune criterion')
+    parser.add_argument('--symmetric', dest='symmetric', action='store_true', help='symmetric loss')
 
     args = parser.parse_args()
     args.use_cuda = torch.cuda.is_available()
